@@ -67,7 +67,7 @@ func update_info(player):
 			$"ScrollContainer/VBoxContainer/Brakes-1/dot".texture = green
 
 	## Reverser:
-	if player.reverser == player.ReverserState.NEUTRAL:
+	if player.reverser == ReverserState.NEUTRAL:
 		$"ScrollContainer/VBoxContainer/Reverser/dot".texture = red
 	else:
 		$"ScrollContainer/VBoxContainer/Reverser/dot".texture = green

@@ -49,11 +49,11 @@ func _process(delta):
 
 func update_reverser(command, node):
 	match command:
-		player.ReverserState.FORWARD:
+		ReverserState.FORWARD:
 			node.rotation_degrees.y = -120
-		player.ReverserState.NEUTRAL:
+		ReverserState.NEUTRAL:
 			node.rotation_degrees.y = -90
-		player.ReverserState.REVERSE:
+		ReverserState.REVERSE:
 			node.rotation_degrees.y = -60
 
 

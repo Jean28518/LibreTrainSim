@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "ReverserState",
+"language": "GDScript",
+"path": "res://addons/Libre_Train_Sim_Editor/Data/Scripts/Enums/ReverserState.gd"
+}, {
 "base": "Control",
 "class": "TimeField",
 "language": "GDScript",
 "path": "res://addons/Libre_Train_Sim_Editor/Docks/Configuration/time_field.gd"
 } ]
 _global_script_class_icons={
+"ReverserState": "",
 "TimeField": ""
 }
 

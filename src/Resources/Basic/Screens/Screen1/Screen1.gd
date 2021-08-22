@@ -88,9 +88,9 @@ func update_display(speed, command, doorLeft, doorRight, doorsClosing, enforcedB
 	$Doors/Left.visible = doorLeft
 	$Doors/Door.visible = doorLeft or doorRight
 
-	$Reverser/Forward.visible = reverser > 0
-	$Reverser/Backward.visible = reverser < 0
-	$Reverser/Neutral.visible = reverser == 0
+	$Reverser/Forward.visible = reverser == ReverserState.FORWARD
+	$Reverser/Backward.visible = reverser == ReverserState.REVERSE
+	$Reverser/Neutral.visible = reverser == ReverserState.NEUTRAL
 
 #	if not lastAutoPilot and autopilot:
 #		$AnimationPlayerAutoPilot.play("autopilot")

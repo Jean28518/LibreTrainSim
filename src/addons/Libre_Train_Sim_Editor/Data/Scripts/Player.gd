@@ -37,11 +37,6 @@ var overrunRedSignal = false
 var stations = {"nodeName" : [], "stationName" : [], "arrivalTime" : [], "departureTime" : [], "haltTime" : [], "stopType" : [], "waitingPersons" : [], "leavingPersons" : [], "passed" : [], "arrivalAnnouncePath" : [], "departureAnnouncePath" : [], "approachAnnouncePath" : []} 
 ## StopType: 0: Dont halt at this station, 1: Halt at this station, 2: Beginning Station, 3: End Station
 
-enum ReverserState {
-	FORWARD = 1,
-	NEUTRAL = 0,
-	REVERSE = -1,
-}
 var reverser = ReverserState.NEUTRAL
 
 ## For current Station:

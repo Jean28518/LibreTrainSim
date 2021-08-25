@@ -10,11 +10,11 @@ export (bool) var cabinMode = false
 
 var baked_route
 var baked_route_direction
-var routeIndex = 0
+var route_index = 0
 var forward
 var currentRail 
-var distanceOnRail = 0
-var distance = 0
+var distance_on_rail = 0
+var distance_on_route = 0
 var speed = 0
 
 var leftDoors = []
@@ -75,7 +75,7 @@ func _process(delta):
 	$MeshInstance.show()
 	if get_parent().name != "Players": return
 	if distanceToPlayer == -1:
-		distanceToPlayer = abs(player.distanceOnRail - distanceOnRail)
+		distanceToPlayer = abs(player.distance_on_rail - distance_on_rail)
 	visible = player.wagonsVisible
 	if not initialSet or not visible:
 		$MeshInstance.hide()
@@ -89,9 +89,9 @@ func _process(delta):
 	
 	if not visible: return
 	if forward:
-		self.transform = currentRail.get_transform_at_rail_distance(distanceOnRail)
+		self.transform = currentRail.get_transform_at_rail_distance(distance_on_rail)
 	else:
-		self.transform = currentRail.get_transform_at_rail_distance(distanceOnRail)
+		self.transform = currentRail.get_transform_at_rail_distance(distance_on_rail)
 		rotate_object_local(Vector3(0,1,0), deg2rad(180))
 	
 	if has_node("InsideLight"):
@@ -103,43 +103,60 @@ func _process(delta):
 
 func drive(delta):
 	if currentRail  == player.currentRail:
+		## It is IMPORTANT that the `distance > length` and `distance < 0` are SEPARATE!
 		if player.forward:
-			distanceOnRail = player.distanceOnRail - distanceToPlayer
-			distance = player.distance - distanceToPlayer
-			if distanceOnRail > currentRail.length:
+			distance_on_rail = player.distance_on_rail - distanceToPlayer # possibly < 0 !
+			distance_on_route = player.distance_on_route - distanceToPlayer
+			if distance_on_rail > currentRail.length:
 				change_to_next_rail()
 		else:
-			distanceOnRail = player.distanceOnRail + distanceToPlayer
-			distance = player.distance + distanceToPlayer
-			if distanceOnRail < 0:
+			distance_on_rail = player.distance_on_rail + distanceToPlayer # possibly > currentRail.length !
+			distance_on_route = player.distance_on_route + distanceToPlayer
+			if distance_on_rail < 0:
 				change_to_next_rail()
-		
-		
 	else: 
 		## Real Driving - Only used, if wagon isn't at the same rail as his player.
-		var drivenDistance
-		if forward:
-			drivenDistance = speed * delta
-			distanceOnRail += drivenDistance
-			distance += drivenDistance
-			if distanceOnRail > currentRail.length:
-				change_to_next_rail()
-		else:
-			drivenDistance = speed * delta
-			distanceOnRail -= drivenDistance
-			distance += drivenDistance
-			if distanceOnRail < 0:
-				change_to_next_rail()
+		var driven_distance = speed * delta
+		if player.reverser == ReverserState.REVERSE:
+			driven_distance = -driven_distance
+		distance_on_route += driven_distance
 
+		if not forward:
+			driven_distance = -driven_distance
+		distance_on_rail += driven_distance
+
+		if distance_on_rail > currentRail.length or distance_on_rail < 0:
+			change_to_next_rail()
+
+
+# TODO: this is almost 100% duplicate code also in Player.gd
+#       can we have a single method that both of them use?
 func change_to_next_rail():
-	if forward:
-		distanceOnRail -= currentRail.length
-	routeIndex += 1
-	currentRail =  world.get_node("Rails").get_node(baked_route[routeIndex])
-	forward = baked_route_direction[routeIndex]
+	if forward and (player.reverser == ReverserState.FORWARD):
+		distance_on_rail -= currentRail.length
+	if not forward and (player.reverser == ReverserState.REVERSE):
+		distance_on_rail -= currentRail.length
+
+	if player.reverser == ReverserState.REVERSE:
+		route_index -= 1
+	else:
+		route_index += 1
+
+	if baked_route.size() == route_index:
+		print(name + ": Route no more rail found, despawning me...")
+		queue_free()
+		return
+
+	currentRail =  world.get_node("Rails").get_node(baked_route[route_index])
+	forward = baked_route_direction[route_index]
+
 	updateSwitchOnNextChange()
-	if not forward:
-		distanceOnRail += currentRail.length
+
+	if not forward and (player.reverser == ReverserState.FORWARD):
+		distance_on_rail += currentRail.length
+	if forward and (player.reverser == ReverserState.REVERSE):
+		distance_on_rail += currentRail.length
+
 
 var lastDoorRight = false
 var lastDoorLeft = false
@@ -185,9 +202,9 @@ func check_pantograph():
 #		nextSwitchOnBeginning = true
 #		return
 #
-#	if baked_route.size() > routeIndex+1:
-#		var nextRail = baked_route[routeIndex+1]
-#		var nextForward = baked_route_direction[routeIndex+1]
+#	if baked_route.size() > route_index+1:
+#		var nextRail = baked_route[route_index+1]
+#		var nextForward = baked_route_direction[route_index+1]
 #		if nextForward and nextRail.isSwitchPart[0] != "":
 #			nextSwitchRail = nextRail
 #			nextSwitchOnBeginning = true
@@ -389,9 +406,9 @@ func updateSwitchOnNextChange(): ## Exact function also in player.gd. But these 
 		switch_on_next_change = true
 		return
 	
-	if baked_route.size() > routeIndex+1:
-		var nextRail = world.get_node("Rails").get_node(baked_route[routeIndex+1])
-		var nextForward = baked_route_direction[routeIndex+1]
+	if baked_route.size() > route_index+1:
+		var nextRail = world.get_node("Rails").get_node(baked_route[route_index+1])
+		var nextForward = baked_route_direction[route_index+1]
 		if nextForward and nextRail.isSwitchPart[0] != "":
 			switch_on_next_change = true
 			return

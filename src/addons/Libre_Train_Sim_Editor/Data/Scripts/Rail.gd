@@ -72,7 +72,7 @@ onready var world = find_parent("World")
 onready var buildings = world.get_node("Buildings")
 
 
-var attachedSignals = {}
+var attachedSignals = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -228,7 +228,7 @@ func calcShift(newvar):
 
 func register_signal(name, distance):
 	print("Signal " + name + " registered at rail.")
-	attachedSignals[name] = distance
+	attachedSignals.append({"name": name, "distance": distance})
 
 func get_pos_at_RailDistance(distance):
 	var circlePos = circle_get_pos(radius, distance)

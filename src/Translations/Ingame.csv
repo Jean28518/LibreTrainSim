@@ -55,3 +55,9 @@ TRAIN_INFO_FRONT_LIGHT,Front Light ('L'),Spitzenlicht ('L'),Luci frontali (‘L�
 TRAIN_INFO_CABIN_LIGHT,Cabin Light ('Ctrl' + 'L'),Kabinenlicht ('Strg' + 'L'),Luci cabina (‘Ctrl’ + ‘L’),室内電気 ('Ctrl' + 'L'),"Światła Kabiny (""Ctrl + L"")",Світло в кабіні ('Ctrl' + 'L')
 TRAIN_INFO_AUTOPILOT,Autopilot ('Ctrl' +  'a'),Autopilot ('Strg' + 'a'),Guida automatica (‘Ctrl’ + ‘A’),自動運転 ('Ctrl' +  'a'),"Autopilot (""Ctrl + A"")",Автопілот  ('Ctrl' +  'a')
 TRAIN_INFO_ENGINE,Engines ('e'; Check: Pantograpph),Motoren ('e'; Überprüfen: Pantograf),,,"Silniki (""e""; Sprawdź: Pantograf)",
+"TRAIN_INFO_REVERSER","Reverser ('r': reverse, 'f': forward)","Richtungswahl ('r': rückwärts, 'f': vorwärts)",,,,
+,,,,,,
+"FORWARD","Forward","Vorwärts",,,,
+"NEUTRAL","Neutral","Neutral",,,,
+"REVERSE","Reverse","Rückwärts",,,,
+,,,,,,

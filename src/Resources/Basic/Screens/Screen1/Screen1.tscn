@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Resources/Basic/Screens/Screen1/Screen1.gd" type="Script" id=1]
 [ext_resource path="res://Resources/Basic/Screens/Screen1/Screen1.png" type="Texture" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://addons/Libre_Train_Sim_Editor/Data/Misc/FontMedium.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Resources/Basic/Screens/Screen1/SpeedLimit.png" type="Texture" id=8]
 [ext_resource path="res://addons/Libre_Train_Sim_Editor/Data/Misc/Oswald-Regular.ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://Resources/Basic/Screens/Screen1/richtung_fwd.png" type="Texture" id=10]
+[ext_resource path="res://Resources/Basic/Screens/Screen1/richtung_bwd.png" type="Texture" id=11]
+[ext_resource path="res://Resources/Basic/Screens/Screen1/richtung_neutral.png" type="Texture" id=12]
 
 [sub_resource type="DynamicFont" id=1]
 size = 80
@@ -60,7 +63,7 @@ offset = Vector2( -0.253, -122.526 )
 
 [node name="SpeedPointer" type="Sprite" parent="."]
 modulate = Color( 0.729412, 0.0352941, 0.0352941, 1 )
-position = Vector2( 362.007, 326.524 )
+position = Vector2( 363.129, 326.524 )
 rotation = -1.0472
 texture = ExtResource( 3 )
 offset = Vector2( -96.0201, 0.240082 )
@@ -72,8 +75,27 @@ rotation = 1.5708
 texture = ExtResource( 3 )
 offset = Vector2( -96.0201, 0.240082 )
 
+[node name="Reverser" type="Node2D" parent="."]
+
+[node name="Neutral" type="Sprite" parent="Reverser"]
+position = Vector2( 658, 326 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 12 )
+
+[node name="Forward" type="Sprite" parent="Reverser"]
+visible = false
+position = Vector2( 658, 326 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 10 )
+
+[node name="Backward" type="Sprite" parent="Reverser"]
+visible = false
+position = Vector2( 658, 326 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 11 )
+
 [node name="Doors" type="Node2D" parent="."]
-position = Vector2( 650, 600 )
+position = Vector2( 658, 600 )
 
 [node name="Door" type="Sprite" parent="Doors"]
 texture = ExtResource( 6 )

@@ -69,7 +69,7 @@ func basics():
 		6:
 #			message = "Great... \nWait... the signal is now green! Now we need to accelerate very fast.\nTo do this, simply press the right arrow key. It instantly sets the train to max power."
 			message = TranslationServer.translate("TUTORIAL_0_5")
-			if player.distanceOnRail > 700 and player.currentRail.name == "Rail":
+			if player.distance_on_rail > 700 and player.currentRail.name == "Rail":
 				next_step()
 		7:
 #			message = "The signal in front of you is blinking.. what does this mean?\nIf a signal is blinking, then its announcing a new speed limit, which is lower than your current one.\nNo fear, the blinking signal just announce it, the speed limit will become effective at the signal behind it.\n\nIf e.g. the signal displays a 8, then the speed limit is 80 km/h.\nOrange signs/digits are always announcing limits,\nWhite signs/digits will set the speed limit effective."
@@ -79,7 +79,7 @@ func basics():
 		8:
 #			message = "In 600 meters there will be the next train station. Every station is announced in the left bottom corner, if its 1000m away. Certainly you already saw it.\n\nIt is recommended to brake down to about 70 or 60 km/h, and then brake softly if you are shortly before the train station.\nLets arrive!"
 			message = TranslationServer.translate("TUTORIAL_0_7")
-			if player.distanceOnRail > 250 and player.currentRail.name == "Rail2":
+			if player.distance_on_rail > 250 and player.currentRail.name == "Rail2":
 				next_step()
 
 		9: 
@@ -114,7 +114,7 @@ func advanced():
 				next_step()
 		3:
 			message = TranslationServer.translate("TUTORIAL_1_2")
-			if player.distanceOnRail > 800:
+			if player.distance_on_rail > 800:
 				next_step()
 		4: 
 			message = TranslationServer.translate("TUTORIAL_1_5")
@@ -179,7 +179,7 @@ func basics_mobile_version():
 			message = TranslationServer.translate("TUTORIAL_4_6")
 			player.get_node("HUD/MobileHUD/Down").modulate = Color(1, 1, 1, 1)
 			player.get_node("HUD/MobileHUD/Up").modulate = Color(1, 0.5, 0, 1)
-			if player.distanceOnRail > 700 and player.currentRail.name == "Rail":
+			if player.distance_on_rail > 700 and player.currentRail.name == "Rail":
 				next_step()
 		7:
 			player.get_node("HUD/MobileHUD/Up").modulate = Color(1, 1, 1, 1)
@@ -190,7 +190,7 @@ func basics_mobile_version():
 		8:
 #			message = "In 600 meters there will be the next train station. Every station is announced in the left bottom corner, if its 1000m away. Certainly you already saw it.\n\nIt is recommended to brake down to about 70 or 60 km/h, and then brake softly if you are shortly before the train station.\nLets arrive!"
 			message = TranslationServer.translate("TUTORIAL_4_8")
-			if player.distanceOnRail > 250 and player.currentRail.name == "Rail2":
+			if player.distance_on_rail > 250 and player.currentRail.name == "Rail2":
 				next_step()
 
 		9: 

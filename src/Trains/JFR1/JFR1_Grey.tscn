@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://Trains/JFR1/Door.tres" type="ArrayMesh" id=1]
 [ext_resource path="res://Resources/Basic/Materials/White_Plastic.tres" type="Material" id=2]
@@ -6,7 +6,9 @@
 [ext_resource path="res://Resources/Basic/Materials/LEDLamp.tres" type="Material" id=4]
 [ext_resource path="res://Resources/Basic/Materials/Metal_Grey.tres" type="Material" id=5]
 [ext_resource path="res://addons/Libre_Train_Sim_Editor/Data/Scripts/Player.gd" type="Script" id=6]
+[ext_resource path="res://Resources/Basic/Reverser.obj" type="ArrayMesh" id=7]
 [ext_resource path="res://Trains/JFR1/Wagon_1_WithDriverStand.obj" type="ArrayMesh" id=8]
+[ext_resource path="res://Resources/Basic/Screens/ScreenReverser/Reverser.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Resources/Basic/Sounds/DoorsOpening.ogg" type="AudioStream" id=10]
 [ext_resource path="res://Resources/Basic/Textures/ScreenBook.png" type="Texture" id=11]
 [ext_resource path="res://addons/Libre_Train_Sim_Editor/Data/Modules/HUD.tscn" type="PackedScene" id=14]
@@ -151,6 +153,19 @@ surfaces/4 = {
 "skeleton_aabb": [  ],
 "vertex_count": 168
 }
+
+[sub_resource type="SpatialMaterial" id=30]
+albedo_color = Color( 0, 0, 0, 1 )
+metallic = 0.1
+roughness = 0.9
+emission_enabled = true
+emission = Color( 0.603922, 0.603922, 0.603922, 1 )
+emission_energy = 1.0
+emission_operator = 1
+emission_on_uv2 = false
+
+[sub_resource type="QuadMesh" id=31]
+size = Vector2( 1, 0.75 )
 
 [sub_resource type="ArrayMesh" id=9]
 surfaces/0 = {
@@ -916,6 +931,25 @@ material/1 = null
 material/2 = null
 material/3 = null
 material/4 = null
+
+[node name="Reverser" type="MeshInstance" parent="Cabin"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 7.046, 2.5135, 0.0444686 )
+mesh = ExtResource( 7 )
+material/0 = ExtResource( 3 )
+
+[node name="ScreenReverser" type="MeshInstance" parent="Cabin"]
+transform = Transform( -6.11959e-09, 0.14, 4.37114e-08, 0, -6.11959e-09, 1, 0.14, 6.11959e-09, 1.91069e-15, 7.046, 2.51304, 0 )
+material_override = SubResource( 30 )
+cast_shadow = 0
+mesh = SubResource( 31 )
+material/0 = null
+
+[node name="DisplayReverser" type="Viewport" parent="Cabin"]
+size = Vector2( 1200, 800 )
+usage = 0
+render_target_v_flip = true
+
+[node name="Reverser" parent="Cabin/DisplayReverser" instance=ExtResource( 9 )]
 
 [node name="BrakeRoll" type="MeshInstance" parent="Cabin"]
 transform = Transform( 0.810062, -0.586344, 0, 0.586344, 0.810062, 0, 0, 0, 1, 7.0459, 2.47729, 0.191648 )

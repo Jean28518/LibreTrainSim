@@ -266,24 +266,7 @@ func processLong(delta): ## All functions in it are called every (processLongDel
 var processLongTimer = 0
 
 func _process(delta):
-	if Input.is_action_just_pressed("debug")  and not ai:
-		debug = !debug
-		if debug:
-			send_message(TranslationServer.translate("DEBUG_MODE_ENABLED"))
-			force_close_doors()
-			force_pantograph_up()
-			startEngine()
-			overrunRedSignal = false
-			enforcedBreaking = false
-			command = 0
-			soll_command = 0
-			
-		else:
-			overrunRedSignal = false
-			enforcedBreaking = false
-			command = 0
-			soll_command = 0
-			send_message(TranslationServer.translate("DEBUG_MODE_DISABLED"))
+
 	
 	processLongTimer += delta
 	if processLongTimer > processLongDelta:
@@ -349,9 +332,25 @@ func _process(delta):
 	
 	check_overdriving_a_switch()
 	
-	
-	
-	
+func _unhandled_key_input(event):
+	if Input.is_action_just_pressed("debug") and not ai:
+		debug = !debug
+		if debug:
+			send_message("DEBUG_MODE_ENABLED")
+			force_close_doors()
+			force_pantograph_up()
+			startEngine()
+			overrunRedSignal = false
+			enforcedBreaking = false
+			command = 0
+			soll_command = 0
+			
+		else:
+			overrunRedSignal = false
+			enforcedBreaking = false
+			command = 0
+			soll_command = 0
+			send_message("DEBUG_MODE_DISABLED")
 
 func handleEngine():
 	if not pantograph:
@@ -402,17 +401,17 @@ func _input(event):
 
 func getCommand(delta):
 	if controlType == 0 and not automaticDriving: ## Combi Roll
-		if Input.is_action_pressed("ui_up"):
+		if Input.is_action_pressed("acc+"):
 			soll_command += 0.7 * delta
-		if Input.is_action_pressed("ui_down"):
+		if Input.is_action_pressed("acc-"):
 			soll_command -= 0.7 * delta
 		if soll_command >= 1:
 			soll_command = 1
 		if soll_command <= -1:
 			soll_command = -1
-		if Input.is_action_pressed("ui_left"):
+		if Input.is_action_pressed("brake-"):
 			soll_command = 0
-		if Input.is_action_pressed("ui_right"):
+		if Input.is_action_pressed("brake+"):
 			soll_command = 1
 		if soll_command > 1: soll_command = 1
 		if soll_command < -1: soll_command = -1
@@ -711,7 +710,7 @@ func handle_signal(signalname):
 		if signal.warnSpeed != -1: 
 			pass
 		if signal.status == 0:
-			send_message(TranslationServer.translate("YOU_OVERRUN_RED_SIGNAL"))
+			send_message("YOU_OVERRUN_RED_SIGNAL")
 			overrunRedSignal = true
 		else:
 			freeLastSignalAfterDrivenTrainLength()
@@ -773,26 +772,28 @@ func check_station(delta):
 	if currentStationName != "":
 		if (speed == 0 and not isInStation and distance-distanceOnStationBeginning+GOODWILL_DISTANCE<length) and not wholeTrainNotInStation and not stationBeginning:
 			wholeTrainNotInStation = true
-			send_message(TranslationServer.translate("END_OF_YOUR_TRAIN_NOT_IN_STATION"))
+			send_message("END_OF_YOUR_TRAIN_NOT_IN_STATION")
 		if ((speed == 0 and not isInStation and distance-distanceOnStationBeginning>=length) and not (doorLeft or doorRight)):
 			doorOpenMessageSentTimer += delta
 			if doorOpenMessageSentTimer > 5 and not doorOpenMessageSent:
-				send_message(TranslationServer.translate("HINT_OPEN_DOORS"))
+				send_message("HINT_OPEN_DOORS", ["doorLeft", "doorRight"])
 				doorOpenMessageSent = true
 		if ((speed == 0 and not isInStation and distance-distanceOnStationBeginning>=length) and (doorLeft or doorRight or platformSide == 0)) or (stationBeginning and not isInStation):
 			realArrivalTime = time
 			var lateMessage = ". "
 			if not stationBeginning:
 				var secondsLater = -arrivalTime[2] + realArrivalTime[2] + (-arrivalTime[1] + realArrivalTime[1])*60 + (-arrivalTime[0] + realArrivalTime[0])*3600
-				if secondsLater > 120:
-					lateMessage += TranslationServer.translate("YOU_ARE_LATE_1") + " " + String(int(secondsLater/60)) + " " + TranslationServer.translate("YOU_ARE_LATE_2_ONE_MINUTE")
-				elif secondsLater > 60:
-					lateMessage += TranslationServer.translate("YOU_ARE_LATE_1") + " " + String(int(secondsLater/60)) + " " + TranslationServer.translate("YOU_ARE_LATE_2")
+				if secondsLater < 60:
+					lateMessage = ""
+				elif secondsLater < 120:
+					lateMessage += tr("YOU_ARE_LATE_1") + " %d %s" % [int(secondsLater/60), tr("YOU_ARE_LATE_2_ONE_MINUTE")]
+				else:
+					lateMessage += tr("YOU_ARE_LATE_1") + " %d %s" % [int(secondsLater/60), tr("YOU_ARE_LATE_2")]
 			if stationBeginning:
 				currentStationNode.set_waiting_persons(stations["waitingPersons"][0]/100.0 * world.default_persons_at_station)
-				jEssentials.call_delayed(1.2, self, "send_message", [TranslationServer.translate("WELCOME_TO") + " " + currentStationName])
+				jEssentials.call_delayed(1.2, self, "send_message", [tr("WELCOME_TO") + " " + currentStationName])
 			else:
-				send_message(TranslationServer.translate("WELCOME_TO") + " " + currentStationName + lateMessage)
+				send_message(tr("WELCOME_TO") + " " + currentStationName + lateMessage)
 				
 			
 			if camera_state != CameraState.CABIN_VIEW:
@@ -807,7 +808,7 @@ func check_station(delta):
 		elif (speed == 0 and isInStation ) :
 			if stationTimer > stationHaltTime:
 				if endStation:
-					send_message(TranslationServer.translate("SCENARIO_FINISHED"))
+					send_message("SCENARIO_FINISHED")
 					stations["passed"][stations["stationName"].find(currentStationName)] = true
 					currentStationName = ""
 					nextStation = ""
@@ -818,7 +819,7 @@ func check_station(delta):
 					return
 				if depatureTime[0] <= time[0] and depatureTime[1] <= time[1] and depatureTime[2] <= time[2]:
 					nextStation = null
-					send_message(TranslationServer.translate("YOU_CAN_DEPART"))
+					send_message("YOU_CAN_DEPART")
 					stations["passed"][stations["stationName"].find(currentStationName)] = true
 					if camera_state != CameraState.CABIN_VIEW:
 						for wagon in wagonsI:
@@ -827,13 +828,13 @@ func check_station(delta):
 						jAudioManager.play_game_sound(stations["departureAnnouncePath"][current_station_index])
 					leave_current_station()
 		elif (speed != 0 and isInStation) and not (doorLeft or doorRight):
-			send_message(TranslationServer.translate("YOU_DEPARTED_EARLIER"))
+			send_message("YOU_DEPARTED_EARLIER")
 			leave_current_station()
 		elif (stationLength+GOODWILL_DISTANCE<distance-distanceOnStationBeginning) and currentStationName != "" and not stationBeginning:
 			if isInStation:
-				send_message(TranslationServer.translate("YOU_DEPARTED_EARLIER"))
+				send_message("YOU_DEPARTED_EARLIER")
 			else:
-				send_message(TranslationServer.translate("YOU_MISSED_A_STATION"))
+				send_message("YOU_MISSED_A_STATION")
 			leave_current_station()
 		stationTimer += delta
 		if (speed != 0):
@@ -890,15 +891,14 @@ func checkSpeedLimit(delta):
 	hardOverSpeeding = Math.speedToKmH(speed) > currentSpeedLimit + 10
 	if Math.speedToKmH(speed) > currentSpeedLimit + 5 and checkSpeedLimitTimer > 5:
 		checkSpeedLimitTimer = 0
-		send_message( TranslationServer.translate("YOU_ARE_DRIVING_TO_FAST") + " " +  String(currentSpeedLimit))
+		send_message(tr("YOU_ARE_DRIVING_TO_FAST") + " " +  String(currentSpeedLimit))
 	checkSpeedLimitTimer += delta
 
-	
-func send_message(string):
+
+func send_message(string : String, actions := []):
 	if not ai:
-		print("Sending Message: " + string )
-		$HUD.send_Message(string)
-		
+		print("Sending Message: " + tr(string) % actions )
+		$HUD.send_message(string, actions)
 
 ## Doors:
 
@@ -1090,7 +1090,7 @@ func check_for_next_station(delta):  ## Used for displaying (In 1000m there is .
 				distanceS = "1km"
 			else:
 				distanceS+= "m"
-			send_message(TranslationServer.translate("THE_NEXT_STATION_IS_1") + " " + stations["stationName"][stations["nodeName"].find(nextStation)]+ ". " + TranslationServer.translate("THE_NEXT_STATION_IS_2")+ " " + distanceS + " " + TranslationServer.translate("THE_NEXT_STATION_IS_3"))
+			send_message(tr("THE_NEXT_STATION_IS_1") + " " + stations["stationName"][stations["nodeName"].find(nextStation)]+ ". " + tr("THE_NEXT_STATION_IS_2")+ " " + distanceS + " " + tr("THE_NEXT_STATION_IS_3"))
 			if camera_state != CameraState.OUTER_VIEW and camera_state != CameraState.FREE_VIEW and not ai:
 #				print(name + ": Playing Sound.......................................................")
 				jTools.call_delayed(10, jAudioManager, "play_game_sound", [stations["approachAnnouncePath"][stations["nodeName"].find(nextStation)]])
@@ -1111,18 +1111,18 @@ func check_for_player_help(delta):
 		check_for_player_helpTimer += delta
 		if check_for_player_helpTimer > 8 and not pantographUp and not check_for_player_helpSent:
 			if not Root.mobile_version:
-				send_message(TranslationServer.translate("HINT_F2"))
+				send_message("HINT_F2", ["trainInfoAbove"])
 			check_for_player_helpSent = true
 		if check_for_player_helpTimer > 15 and command < -0.5 and not check_for_player_helpSent:
 			if not Root.mobile_version:
-				send_message(TranslationServer.translate("HINT_F2"))
+				send_message("HINT_F2", ["trainInfoAbove"])
 			check_for_player_helpSent = true
 	else:
 		check_for_player_helpTimer = 0
 	
 	check_for_player_helpTimer2 += delta
 	if blockedAcceleration and accRoll > 0 and brakeRoll == 0 and not (doorRight or doorLeft) and not overrunRedSignal and check_for_player_helpTimer2 > 10 and not isInStation:
-		send_message(TranslationServer.translate("HINT_ADVANCED_DRIVING"))
+		send_message("HINT_ADVANCED_DRIVING", ["acc-", "acc+"])
 		check_for_player_helpTimer2 = 0
 		
 

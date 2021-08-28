@@ -784,6 +784,8 @@ func check_station(delta):
 			if not stationBeginning:
 				var secondsLater = -arrivalTime[2] + realArrivalTime[2] + (-arrivalTime[1] + realArrivalTime[1])*60 + (-arrivalTime[0] + realArrivalTime[0])*3600
 				if secondsLater < 60:
+					lateMessage = ""
+				elif secondsLater < 120:
 					lateMessage += tr("YOU_ARE_LATE_1") + " %d %s" % [int(secondsLater/60), tr("YOU_ARE_LATE_2_ONE_MINUTE")]
 				else:
 					lateMessage += tr("YOU_ARE_LATE_1") + " %d %s" % [int(secondsLater/60), tr("YOU_ARE_LATE_2")]

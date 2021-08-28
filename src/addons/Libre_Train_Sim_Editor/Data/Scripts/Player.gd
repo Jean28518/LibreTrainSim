@@ -402,17 +402,17 @@ func _input(event):
 
 func getCommand(delta):
 	if controlType == 0 and not automaticDriving: ## Combi Roll
-		if Input.is_action_pressed("ui_up"):
+		if Input.is_action_pressed("acc+"):
 			soll_command += 0.7 * delta
-		if Input.is_action_pressed("ui_down"):
+		if Input.is_action_pressed("acc-"):
 			soll_command -= 0.7 * delta
 		if soll_command >= 1:
 			soll_command = 1
 		if soll_command <= -1:
 			soll_command = -1
-		if Input.is_action_pressed("ui_left"):
+		if Input.is_action_pressed("brake-"):
 			soll_command = 0
-		if Input.is_action_pressed("ui_right"):
+		if Input.is_action_pressed("brake+"):
 			soll_command = 1
 		if soll_command > 1: soll_command = 1
 		if soll_command < -1: soll_command = -1
